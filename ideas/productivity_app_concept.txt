@@ -1,0 +1,1 @@
+Mobile app that combines task management with habit tracking and time blocking. Users can create daily schedules, set recurring habits, and get insights on their productivity patterns. Key features: drag-and-drop scheduling, habit streaks, focus timers, and weekly analytics dashboard.
