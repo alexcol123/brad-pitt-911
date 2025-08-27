@@ -1,0 +1,343 @@
+/* Brad Pitt AI Chat Widget Styles */
+
+/* Chat Button */
+#brad-chat-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#brad-chat-button.hidden {
+    transform: scale(0);
+    opacity: 0;
+}
+
+.chat-button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px 20px;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+    transition: all 0.3s ease;
+    min-width: 160px;
+}
+
+.chat-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(102, 126, 234, 0.6);
+}
+
+.chat-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.1);
+    padding: 8px;
+}
+
+.chat-text {
+    font-weight: 600;
+    font-size: 16px;
+}
+
+/* Chat Modal */
+#brad-chat-modal {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    z-index: 1001;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+    width: 100%;
+    max-width: 400px;
+    margin: 20px;
+}
+
+#brad-chat-modal.open {
+    transform: translateY(0);
+}
+
+.chat-modal {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    height: 600px;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Chat Header */
+.chat-header {
+    background: linear-gradient(135deg, #2c3e50, #34495e);
+    color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chat-header-content {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.header-avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px;
+}
+
+.header-info h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.status {
+    margin: 0;
+    font-size: 14px;
+    color: #4CAF50;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.status::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    background: #4CAF50;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease;
+}
+
+.close-button:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Chat Messages */
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    background: #f8f9fa;
+}
+
+.message {
+    margin-bottom: 15px;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.brad-message .message-content {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 12px 18px;
+    border-radius: 18px 18px 18px 4px;
+    max-width: 80%;
+    position: relative;
+}
+
+.user-message {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.user-message .message-content {
+    background: #e3f2fd;
+    color: #1976d2;
+    padding: 12px 18px;
+    border-radius: 18px 18px 4px 18px;
+    max-width: 80%;
+}
+
+.message-content p {
+    margin: 0;
+    line-height: 1.4;
+}
+
+.message-time {
+    font-size: 12px;
+    opacity: 0.7;
+    display: block;
+    margin-top: 5px;
+}
+
+/* Authentication Section */
+.auth-required {
+    padding: 20px;
+    text-align: center;
+    background: white;
+    border-top: 1px solid #eee;
+}
+
+.sign-in-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 10px;
+}
+
+.sign-in-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.auth-text {
+    font-size: 14px;
+    color: #666;
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* Chat Input Area */
+.chat-input-area {
+    display: flex;
+    padding: 15px 20px;
+    background: white;
+    border-top: 1px solid #eee;
+    gap: 10px;
+}
+
+#chat-input {
+    flex: 1;
+    border: 2px solid #e1e5e9;
+    border-radius: 25px;
+    padding: 12px 18px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+#chat-input:focus {
+    border-color: #667eea;
+}
+
+.send-button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.send-button:hover:not(:disabled) {
+    transform: scale(1.05);
+}
+
+.send-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Loading Indicator */
+.loading-indicator {
+    padding: 15px 20px;
+    background: white;
+    border-top: 1px solid #eee;
+    text-align: center;
+    font-style: italic;
+    color: #666;
+}
+
+.loading-indicator p {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.loading-indicator p::after {
+    content: '';
+    width: 20px;
+    height: 20px;
+    border: 2px solid #e1e5e9;
+    border-top-color: #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    #brad-chat-modal {
+        margin: 0;
+        max-width: none;
+        width: 100vw;
+        height: 100vh;
+        border-radius: 0;
+    }
+    
+    .chat-modal {
+        height: 100vh;
+        max-height: none;
+        border-radius: 0;
+    }
+    
+    #brad-chat-button {
+        bottom: 15px;
+        right: 15px;
+    }
+    
+    .chat-button {
+        min-width: 140px;
+        padding: 12px 16px;
+    }
+    
+    .chat-text {
+        font-size: 14px;
+    }
+    
+    .chat-avatar {
+        width: 35px;
+        height: 35px;
+    }
+}
