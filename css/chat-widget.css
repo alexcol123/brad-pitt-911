@@ -39,7 +39,10 @@
     border-radius: 50%;
     border: 2px solid rgba(255, 255, 255, 0.3);
     background: rgba(255, 255, 255, 0.1);
-    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
 }
 
 .chat-text {
@@ -96,7 +99,10 @@
     height: 45px;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.1);
-    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
 }
 
 .header-info h3 {
@@ -195,38 +201,7 @@
     margin-top: 5px;
 }
 
-/* Authentication Section */
-.auth-required {
-    padding: 20px;
-    text-align: center;
-    background: white;
-    border-top: 1px solid #eee;
-}
-
-.sign-in-btn {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    border: none;
-    padding: 12px 30px;
-    border-radius: 25px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin-bottom: 10px;
-}
-
-.sign-in-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-}
-
-.auth-text {
-    font-size: 14px;
-    color: #666;
-    margin: 0;
-    line-height: 1.4;
-}
+/* Removed authentication section - chat now works without auth */
 
 /* Chat Input Area */
 .chat-input-area {

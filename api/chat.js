@@ -1,4 +1,5 @@
-import { OpenAI } from 'openai';
+// Simple Brad Pitt Chat API (No Authentication)
+const { OpenAI } = require('openai');
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -25,7 +26,7 @@ BACKGROUND KNOWLEDGE:
 - Net worth around $400 million, films grossed $9.3 billion worldwide
 
 SPEAKING STYLE:
-- Use "Hey there" or "Hey [name]" for greetings
+- Use "Hey there" or "Hey" for greetings
 - Reference your movies naturally: "When I was working on Fight Club..." 
 - Be humble about achievements: "I've been really fortunate..."
 - Show interest in fans: "What about you?" "That's really cool!"
@@ -40,36 +41,32 @@ BOUNDARIES:
 
 Remember: You're talking to a fan who visited your website, so be appreciative and engaging!`;
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
+  // Add CORS headers
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  // Handle preflight OPTIONS request
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   // Only allow POST requests
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
-    // Get the Authorization header
-    const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return res.status(401).json({ error: 'No valid session token provided' });
-    }
+    const { message } = req.body;
 
-    // For now, we'll validate the session token exists
-    // In a full implementation, you'd verify the Clerk JWT
-    const sessionToken = authHeader.slice(7);
-    if (!sessionToken) {
-      return res.status(401).json({ error: 'Invalid session token' });
-    }
-
-    const { message, userId, userName } = req.body;
-
-    if (!message) {
+    if (!message || message.trim() === '') {
       return res.status(400).json({ error: 'Message is required' });
     }
 
-    // Customize the system prompt with user information if available
-    let personalizedPrompt = BRAD_PITT_SYSTEM_PROMPT;
-    if (userName) {
-      personalizedPrompt += `\n\nThe user's name is ${userName}. Use their name naturally in conversation when appropriate.`;
+    // Basic rate limiting - simple in-memory approach
+    if (message.length > 500) {
+      return res.status(400).json({ error: 'Message too long. Please keep it under 500 characters.' });
     }
 
     // Call OpenAI API
@@ -78,11 +75,11 @@ export default async function handler(req, res) {
       messages: [
         {
           role: "system",
-          content: personalizedPrompt
+          content: BRAD_PITT_SYSTEM_PROMPT
         },
         {
           role: "user",
-          content: message
+          content: message.trim()
         }
       ],
       max_tokens: 500,
@@ -91,10 +88,14 @@ export default async function handler(req, res) {
       presence_penalty: 0.3
     });
 
-    const reply = completion.choices[0].message.content;
+    const reply = completion.choices[0]?.message?.content;
+
+    if (!reply) {
+      throw new Error('No response generated');
+    }
 
     return res.status(200).json({
-      reply: reply,
+      reply: reply.trim(),
       timestamp: new Date().toISOString()
     });
 
@@ -102,14 +103,18 @@ export default async function handler(req, res) {
     console.error('Chat API Error:', error);
     
     // Handle different types of errors
-    if (error.code === 'insufficient_quota') {
-      return res.status(429).json({ error: 'API quota exceeded. Please try again later.' });
+    if (error.code === 'insufficient_quota' || error.message.includes('quota')) {
+      return res.status(429).json({ error: 'Sorry, I\'m getting a lot of messages right now. Please try again in a moment!' });
     }
     
-    if (error.code === 'invalid_api_key') {
-      return res.status(500).json({ error: 'API configuration error.' });
+    if (error.code === 'invalid_api_key' || error.message.includes('API key')) {
+      return res.status(500).json({ error: 'Sorry, there\'s a technical issue on my end. Please try again later!' });
     }
 
-    return res.status(500).json({ error: 'Failed to generate response. Please try again.' });
+    if (error.message.includes('rate_limit')) {
+      return res.status(429).json({ error: 'Whoa, slow down there! Give me a second to catch up.' });
+    }
+
+    return res.status(500).json({ error: 'Sorry, I had trouble understanding that. Could you try rephrasing?' });
   }
-}
+};

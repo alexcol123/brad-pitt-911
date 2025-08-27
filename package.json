@@ -9,7 +9,6 @@
     "start": "vercel dev"
   },
   "dependencies": {
-    "@clerk/clerk-js": "^4.70.5",
     "openai": "^4.24.1"
   },
   "keywords": ["brad-pitt", "hollywood", "actor", "brangelina", "plan-b-entertainment", "ai-chat", "clerk-auth"],

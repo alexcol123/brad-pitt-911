@@ -1,52 +1,19 @@
-// Brad Pitt AI Chat Widget with Clerk Authentication
+// Simple Brad Pitt AI Chat Widget (No Authentication Required)
 class BradPittChatWidget {
     constructor() {
         this.isOpen = false;
-        this.isAuthenticated = false;
-        this.user = null;
-        this.clerk = null;
         this.chatHistory = [];
         this.isLoading = false;
         
         this.init();
     }
 
-    async init() {
-        // Initialize Clerk
-        await this.initializeClerk();
-        
+    init() {
         // Create chat widget elements
         this.createChatWidget();
         
         // Set up event listeners
         this.setupEventListeners();
-        
-        // Check authentication status
-        this.checkAuthStatus();
-    }
-
-    async initializeClerk() {
-        // Load Clerk from CDN
-        if (!window.Clerk) {
-            const script = document.createElement('script');
-            script.src = 'https://js.clerk.com/v4/clerk.js';
-            script.async = true;
-            document.head.appendChild(script);
-            
-            await new Promise((resolve) => {
-                script.onload = resolve;
-            });
-        }
-
-        // Initialize Clerk with your publishable key
-        const publishableKey = 'pk_test_your_clerk_publishable_key_here'; // Replace with actual key
-        this.clerk = window.Clerk;
-        await this.clerk.load();
-        
-        if (this.clerk.user) {
-            this.isAuthenticated = true;
-            this.user = this.clerk.user;
-        }
     }
 
     createChatWidget() {
@@ -55,7 +22,7 @@ class BradPittChatWidget {
         chatButton.id = 'brad-chat-button';
         chatButton.innerHTML = `
             <div class="chat-button">
-                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23fff'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z'/%3E%3C/svg%3E" alt="Brad Pitt" class="chat-avatar">
+                <div class="chat-avatar">🎬</div>
                 <span class="chat-text">Chat with Brad</span>
             </div>
         `;
@@ -67,7 +34,7 @@ class BradPittChatWidget {
             <div class="chat-modal">
                 <div class="chat-header">
                     <div class="chat-header-content">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23333'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z'/%3E%3C/svg%3E" alt="Brad Pitt" class="header-avatar">
+                        <div class="header-avatar">🎬</div>
                         <div class="header-info">
                             <h3>Brad Pitt</h3>
                             <p class="status">Online</p>
@@ -76,21 +43,16 @@ class BradPittChatWidget {
                     <button class="close-button" id="close-chat">✕</button>
                 </div>
                 <div class="chat-messages" id="chat-messages">
-                    <div class="welcome-message">
-                        <div class="message brad-message">
-                            <div class="message-content">
-                                <p>Hey there! Welcome to my website. Sign in to start chatting with me! 🎬</p>
-                            </div>
+                    <div class="message brad-message">
+                        <div class="message-content">
+                            <p>Hey there! Welcome to my website. What would you like to know about my career, movies, or life? I'm here to chat! 🎬</p>
+                            <span class="message-time">${this.formatTime(new Date())}</span>
                         </div>
                     </div>
                 </div>
                 <div class="chat-input-container">
-                    <div class="auth-required" id="auth-required">
-                        <button class="sign-in-btn" id="sign-in-btn">Sign In to Chat</button>
-                        <p class="auth-text">Sign in with Google, GitHub, or email to start your conversation with Brad Pitt</p>
-                    </div>
-                    <div class="chat-input-area" id="chat-input-area" style="display: none;">
-                        <input type="text" id="chat-input" placeholder="Type your message to Brad...">
+                    <div class="chat-input-area" id="chat-input-area">
+                        <input type="text" id="chat-input" placeholder="Type your message to Brad..." maxlength="500">
                         <button id="send-btn" class="send-button">Send</button>
                     </div>
                 </div>
@@ -115,11 +77,6 @@ class BradPittChatWidget {
             this.closeChat();
         });
 
-        // Sign in button click
-        document.getElementById('sign-in-btn').addEventListener('click', () => {
-            this.signIn();
-        });
-
         // Send button click
         document.getElementById('send-btn').addEventListener('click', () => {
             this.sendMessage();
@@ -141,47 +98,6 @@ class BradPittChatWidget {
         });
     }
 
-    checkAuthStatus() {
-        if (this.isAuthenticated) {
-            this.showAuthenticatedUI();
-        } else {
-            this.showUnauthenticatedUI();
-        }
-    }
-
-    showAuthenticatedUI() {
-        document.getElementById('auth-required').style.display = 'none';
-        document.getElementById('chat-input-area').style.display = 'flex';
-        
-        // Update welcome message
-        const welcomeMessage = document.querySelector('.welcome-message .message-content p');
-        const firstName = this.user?.firstName || 'there';
-        welcomeMessage.textContent = `Hey ${firstName}! Great to see you. What would you like to know about my career or life? 🎬`;
-    }
-
-    showUnauthenticatedUI() {
-        document.getElementById('auth-required').style.display = 'block';
-        document.getElementById('chat-input-area').style.display = 'none';
-    }
-
-    async signIn() {
-        try {
-            await this.clerk.openSignIn();
-            
-            // Listen for sign-in success
-            this.clerk.addListener('session', (session) => {
-                if (session) {
-                    this.isAuthenticated = true;
-                    this.user = session.user;
-                    this.showAuthenticatedUI();
-                }
-            });
-        } catch (error) {
-            console.error('Sign in error:', error);
-            this.showError('Failed to sign in. Please try again.');
-        }
-    }
-
     toggleChat() {
         if (this.isOpen) {
             this.closeChat();
@@ -194,6 +110,11 @@ class BradPittChatWidget {
         this.isOpen = true;
         document.getElementById('brad-chat-modal').classList.add('open');
         document.getElementById('brad-chat-button').classList.add('hidden');
+        
+        // Focus on input
+        setTimeout(() => {
+            document.getElementById('chat-input').focus();
+        }, 300);
     }
 
     closeChat() {
@@ -216,19 +137,13 @@ class BradPittChatWidget {
         this.showLoading(true);
 
         try {
-            // Get session token from Clerk
-            const sessionToken = await this.clerk.session.getToken();
-            
             const response = await fetch('/api/chat', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${sessionToken}`
                 },
                 body: JSON.stringify({
-                    message: message,
-                    userId: this.user.id,
-                    userName: this.user.firstName
+                    message: message
                 })
             });
 
@@ -243,7 +158,7 @@ class BradPittChatWidget {
 
         } catch (error) {
             console.error('Chat error:', error);
-            this.showError('Sorry, I had trouble responding. Please try again!');
+            this.showError(error.message || 'Sorry, I had trouble responding. Please try again!');
         } finally {
             this.showLoading(false);
         }
@@ -266,16 +181,39 @@ class BradPittChatWidget {
 
         // Store in chat history
         this.chatHistory.push({ content, sender, timestamp: new Date() });
+
+        // Animate new message
+        messageDiv.style.opacity = '0';
+        messageDiv.style.transform = 'translateY(10px)';
+        setTimeout(() => {
+            messageDiv.style.transition = 'all 0.3s ease';
+            messageDiv.style.opacity = '1';
+            messageDiv.style.transform = 'translateY(0)';
+        }, 10);
     }
 
     showLoading(show) {
         this.isLoading = show;
-        document.getElementById('loading-indicator').style.display = show ? 'block' : 'none';
-        document.getElementById('send-btn').disabled = show;
+        const loadingIndicator = document.getElementById('loading-indicator');
+        const sendBtn = document.getElementById('send-btn');
+        const chatInput = document.getElementById('chat-input');
+        
+        loadingIndicator.style.display = show ? 'block' : 'none';
+        sendBtn.disabled = show;
+        chatInput.disabled = show;
+        
+        if (show) {
+            sendBtn.textContent = '...';
+            chatInput.placeholder = 'Brad is thinking...';
+        } else {
+            sendBtn.textContent = 'Send';
+            chatInput.placeholder = 'Type your message to Brad...';
+            chatInput.focus();
+        }
     }
 
     showError(message) {
-        this.addMessage(`Sorry, ${message}`, 'brad');
+        this.addMessage(`${message}`, 'brad');
     }
 
     escapeHtml(text) {
