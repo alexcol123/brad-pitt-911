@@ -1,0 +1,14 @@
+{
+  "name": "brad-pitt-website",
+  "version": "1.0.0",
+  "description": "Comprehensive Brad Pitt fan website with biography, filmography, and relationship details",
+  "main": "index.html",
+  "scripts": {
+    "dev": "python3 -m http.server 8000",
+    "build": "echo 'Static site - no build needed'",
+    "start": "python3 -m http.server 8000"
+  },
+  "keywords": ["brad-pitt", "hollywood", "actor", "brangelina", "plan-b-entertainment"],
+  "author": "Brad Pitt Fan Site",
+  "license": "MIT"
+}
